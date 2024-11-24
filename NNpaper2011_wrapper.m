@@ -2,17 +2,18 @@
 % recreate figures/analyses
 
 % SJ updated 06-2021
-
 % some figures look slightly different from figures in paper...why?
-% likelihood calculations (Fig. 4) seem to be off
+% in particular likelihood calculations (Fig. 4) seem to be off
+
 
 % CF 11-2024: fixed a few things, prob related to a version mismatch with 
 % dots3DMP_likelihood_decoding.m.
 % Fig 4 (single-trial likelihoods) still seems off, could be a bug
 % somewhere, and congruency section throws an error because tuning_curves
 % is missing a 5th dim...
-% but the basic components are here if anyone wants to update it some day
+% but the basic components are here if anyone wants to update it someday
  
+
 
 %%
 clear; clc
@@ -22,31 +23,29 @@ load Fetsch_et_al_NatNeuro_2011.mat
 % struct "data" with following fields, each with 79029 rows (one for each
 % trial, concatenated across sessions):
 
-% filename: string format is m=monkey number (m18 is monkey Y, I think,
-%           so m24 is monkey W), c=cell number, r = 'run' (block) number
+% filename: string format is m=monkey ID, c=cell number, r = 'run' (block) number
 % heading: heading angle in degrees
 % coherence: visual stimulus strength, 16% ('low') or 60% ('high');
 %            arbitrarily assigned 16 for vestib trials
 % modality: aka stimulus condition, 1=vestib, 2=visual, 3=combined
 % delta: confict angle (deg), positive means visual to the right of vestib
 % choice: the monkey's saccadic decision, 1=rightward, 0=leftward
-% spikes: raster array where each column is a 1-ms bin containing 1 for a spike and 0 for no spike;
+% spikes: raster matrix where each column is a 1-ms bin containing 1 for a spike and 0 for no spike;
 %         length is 2200 because it includes 100 ms before and 100 ms after the 2-s stimulus epoch
 % spikeRates: spike rate for each trial, typically counted in a 1-s bin centered on the peak velocity
-%             of the stimulus, which turns out to be a bit later than t=1100 in the spikes matrix,
-%             something like spikes(:,636:1636)(?). I recall that for a few cells this window was 
-%             manually adjusted based on idiosyncratic firing rate dynamics, the details of
-%             which are lost to time I'm afraid.
+%             of the stimulus. This turns out to be a bit later than the midpoint of the spikes matrix,
+%             roughly columns [641:1640]. I recall that for a few cells this window was manually adjusted
+%             based on idiosyncratic firing rate dynamics, the details of which are lost to time.
 
 
-%%
+
+%% select monkey (optional), [] = select both, 'W' = m18, 'Y' = m24
+monkey = []; % [], 'W','Y'
+
 mods   = unique(data.modality);
 cohs   = unique(data.coherence);
 deltas = unique(data.delta);
 hdgs   = unique(data.heading);
-
-% select monkey (optional), [] = select both, 'W' = m18, 'Y' = m24
-monkey = []; % [], 'W','Y'
 
 if ~isempty(monkey)
     switch monkey
